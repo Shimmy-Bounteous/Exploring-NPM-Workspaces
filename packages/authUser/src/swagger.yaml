@@ -1,0 +1,258 @@
+openapi: 3.0.3
+info:
+  title: Auth Module - Typescript
+  description: |-
+    Sign-Up, Login & Refresh Token RESTful APIs using Node.js, Express, MongoDB & TypeScript
+  contact:
+    email: shimmmyroy.dasari@bounteous.com
+  version: 2.0.0
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: user
+    description: Authentication Endpoints
+paths:
+  /signup:
+    post:
+      tags:
+        - user
+      summary: Sign-Up User
+      description: This is used to sign-up a new user.
+      operationId: signupUser
+      requestBody:
+        description: Create user
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                dob:
+                  type: string
+                  format: DD/MM/YYYY
+                  nullable: true
+                email:
+                  type: string
+                password:
+                  type: string
+                phoneNo:
+                  type: string
+              required:
+                - name
+                - email
+                - password
+                - phone
+            examples:
+              With DOB:
+                value:
+                  name: John Doe
+                  dob: '01/01/2001'
+                  email: john@example.com
+                  password: Johndoe@1
+                  phoneNo: 1234567890
+              Wothout DOB:
+                value:
+                  name: Jane Smith
+                  email: jane@example.com
+                  password: janeSmith@1
+                  phoneNo: 9876543210
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: User Created
+        '400':
+          description: Invalid Request Body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Request Body
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email already exists
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: The respective error message will be shown
+  /login:
+    post:
+      tags:
+        - user
+      summary: Logs in a user
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              email: test1@test.com
+              password: Test@1
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: Login successful
+                  accessToken:
+                   type: string
+        '401':
+          description: Invalid User Credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid User Credentials
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: The respective error message will be shown
+  /refresh:
+    post:
+      tags:
+        - user
+      summary: Refresh Token
+      description: This is used to generate new access token.
+      operationId: refreshToken
+      security:
+        - cookieAuth: []
+      responses:
+        '201':
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  accessToken:
+                   type: string
+        '403':
+          description: Unauthorized or Invalid Refresh Token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              examples:
+                Unauthorized:
+                  value:
+                    success: false
+                    message: Unauthorized
+                Invalid Refresh Token:
+                  value:
+                    success: false
+                    message: Invalid Refresh Token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: The respective error message will be shown
+components:
+  schemas:
+    
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoDB ObjectID
+          example: '64d9b38d5f145019df819ad6'
+        name:
+          type: string
+          example: Shimmy Roy
+        dob:
+          type: string
+          format: DD/MM/YYYY
+          example: '01/01/2001'
+        email:
+          type: string
+          example: test@test.com
+        password:
+          type: string
+          example: 'Tester@1'
+        phone:
+          type: string
+          example: '1234567890'
+      xml:
+        name: user
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      name: jwt
+      in: cookie
