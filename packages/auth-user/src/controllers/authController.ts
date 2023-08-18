@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt, { JwtPayload, VerifyErrors, VerifyOptions } from 'jsonwebtoken';
 import UsersDB from '../models/user';
 import mongoose from 'mongoose';

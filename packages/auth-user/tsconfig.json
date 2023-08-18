@@ -2,16 +2,19 @@
     "compilerOptions": {
         "module": "NodeNext",
         "resolveJsonModule": true,
-        "lib": ["ES2022"],
+        "lib": [
+            "ES2022"
+        ],
         "target": "ES2022",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "Node",
-
         "baseUrl": "src",
         "outDir": "dist"
     },
-    "include": ["src/**/*"]
+    "include": [
+        "src/**/*"
+    ]
 }
